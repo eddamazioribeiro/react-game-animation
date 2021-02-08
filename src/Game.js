@@ -11,13 +11,21 @@ const Game = ({height, width, tilesize}) => {
   var _ticker = null;
 
   const [gameTimer, setGameTimer] = useState(0);
+  const [player, setPlayer] = useState({
+    color: 'black',
+    width: _config.tilesize,
+    height: _config.tilesize,
+    x: 3 * _config.tilesize,
+    y: 3 * _config.tilesize
+  });
 
   useEffect(() => {
-    // initGame();
+    initGame();
   }, []);
 
   useEffect(() => {
     bindEvent('keydown', handleInput);
+    gameLoop();
   });
 
   const initGame = () => {
@@ -27,6 +35,18 @@ const Game = ({height, width, tilesize}) => {
       setGameTimer(t++);
       console.log(t);
     }, _config.gameSpeed);
+  };
+
+  const gameLoop = () => {
+    const context = _gameScreen.current.getContext('2d');
+    const tilesize = _config.tilesize;
+    const height = _config.height * tilesize;
+    const width = _config.width * tilesize;
+
+    context.clearRect(0, 0, height, width);
+    
+    context.fillStyle = player.color;
+    context.fillRect(player.x, player.y, player.width, player.height);
   };
 
   const handleInput = e => {
@@ -40,26 +60,26 @@ const Game = ({height, width, tilesize}) => {
         keyPressed = true;
         break;
       case 37: // left arrow
-        console.log({x: -1,y: 0});
+        movePlayer(-1, 0);
         keyPressed = true;
         break;
       case 38: // up arrow
-        console.log({x: 0, y: -1});
+        movePlayer(0, -1);
         keyPressed = true;
         break;
       case 39: // right arrow
-        console.log({x: 1, y: 0});
+        movePlayer(1, 0);
         keyPressed = true;
         break;
       case 40: // down arrow
-        console.log({x: 0, y: 1});
+        movePlayer(0, 1);
         keyPressed = true;
         break;
       default:
         break;
     }
 
-    // if (keyPressed) unbindEvent('keydown', handleInput);
+    if (keyPressed) unbindEvent('keydown', handleInput);
   };
 
   const bindEvent = (event, eventHandler) => {
@@ -70,6 +90,15 @@ const Game = ({height, width, tilesize}) => {
     document.removeEventListener(event, eventHandler);
   };
 
+  const movePlayer = (x, y) => {
+    let newPlayer = {...player};
+    let tilesize = _config.tilesize;
+
+    newPlayer.x += x  * tilesize;
+    newPlayer.y += y  * tilesize;
+
+    setPlayer(newPlayer);
+  }
   return(
     <div>
     <canvas ref={_gameScreen}
