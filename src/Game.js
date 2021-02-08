@@ -13,15 +13,61 @@ const Game = ({height, width, tilesize}) => {
   const [gameTimer, setGameTimer] = useState(0);
 
   useEffect(() => {
-    initGame();
+    // initGame();
   }, []);
 
-  let t = 0;
+  useEffect(() => {
+    bindEvent('keydown', handleInput);
+  });
+
   const initGame = () => {
+    let t = 0;
+
     _ticker = setInterval(() => {
       setGameTimer(t++);
       console.log(t);
     }, _config.gameSpeed);
+  };
+
+  const handleInput = e => {
+    e.preventDefault();
+
+    let keyPressed = false;
+
+    switch (e.keyCode) {
+      case 13: // enter
+        console.log('enter');
+        keyPressed = true;
+        break;
+      case 37: // left arrow
+        console.log({x: -1,y: 0});
+        keyPressed = true;
+        break;
+      case 38: // up arrow
+        console.log({x: 0, y: -1});
+        keyPressed = true;
+        break;
+      case 39: // right arrow
+        console.log({x: 1, y: 0});
+        keyPressed = true;
+        break;
+      case 40: // down arrow
+        console.log({x: 0, y: 1});
+        keyPressed = true;
+        break;
+      default:
+        break;
+    }
+
+    // if (keyPressed) unbindEvent('keydown', handleInput);
+  };
+
+  const bindEvent = (event, eventHandler) => {
+    document.addEventListener(event, eventHandler);
+  };
+
+  const unbindEvent = (event, eventHandler) => {
+    document.removeEventListener(event, eventHandler);
   };
 
   return(
