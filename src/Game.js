@@ -1,15 +1,16 @@
 import React, {useRef, useEffect, useState} from 'react';
 
+var _ticker = null;
+var _keyState = {};
+
 const Game = ({height, width, tilesize}) => {
   const _gameScreen = useRef();
   const _config = {
     height: height,
     width: width,
     tilesize: tilesize,
-    gameSpeed: 1000
+    gameSpeed: 100
   };
-  var _ticker = null;
-
   const [gameTimer, setGameTimer] = useState(0);
   const [player, setPlayer] = useState({
     color: 'black',
@@ -24,20 +25,23 @@ const Game = ({height, width, tilesize}) => {
   }, []);
 
   useEffect(() => {
-    bindEvent('keydown', handleInput);
     gameLoop();
-  });
+    bindEvent('keydown', handleKeyDown);
+    bindEvent('keyup', handleKeyUp);
+  }, [gameTimer]);
 
   const initGame = () => {
     let t = 0;
+    _ticker = null;
 
     _ticker = setInterval(() => {
       setGameTimer(t++);
-      console.log(t);
     }, _config.gameSpeed);
   };
 
   const gameLoop = () => {
+    handleInput();
+
     const context = _gameScreen.current.getContext('2d');
     const tilesize = _config.tilesize;
     const height = _config.height * tilesize;
@@ -49,38 +53,44 @@ const Game = ({height, width, tilesize}) => {
     context.fillRect(player.x, player.y, player.width, player.height);
   };
 
-  const handleInput = e => {
-    e.preventDefault();
+  const handleInput = () => {
+    let x = 0, y = 0;
 
-    let keyPressed = false;
-
-    switch (e.keyCode) {
-      case 13: // enter
-        console.log('enter');
-        keyPressed = true;
-        break;
-      case 37: // left arrow
-        movePlayer(-1, 0);
-        keyPressed = true;
-        break;
-      case 38: // up arrow
-        movePlayer(0, -1);
-        keyPressed = true;
-        break;
-      case 39: // right arrow
-        movePlayer(1, 0);
-        keyPressed = true;
-        break;
-      case 40: // down arrow
-        movePlayer(0, 1);
-        keyPressed = true;
-        break;
-      default:
-        break;
+    // enter
+    if (_keyState[13]) {
+      handleEnter();
+    }
+    // left arrow
+    if (_keyState[37]) {
+      x += -1;
+      y += 0;
+    }
+    // up arrow
+    if (_keyState[38]) {
+      x += 0;
+      y += -1;
+    }
+    // right arrow
+    if (_keyState[39]) {
+      x += 1;
+      y += 0;
+    }
+    // down arrow
+    if (_keyState[40]) {
+      x += 0;
+      y += 1;
     }
 
-    if (keyPressed) unbindEvent('keydown', handleInput);
+    movePlayer(x, y);
   };
+
+  const handleKeyDown = e => {
+    _keyState[e.keyCode || e.which] = true;
+  }
+
+  const handleKeyUp = e => {
+    _keyState[e.keyCode || e.which] = false;
+  }
 
   const bindEvent = (event, eventHandler) => {
     document.addEventListener(event, eventHandler);
@@ -99,6 +109,11 @@ const Game = ({height, width, tilesize}) => {
 
     setPlayer(newPlayer);
   }
+
+  const handleEnter = () => {
+    console.log('hit enter');
+  }
+
   return(
     <div>
     <canvas ref={_gameScreen}
