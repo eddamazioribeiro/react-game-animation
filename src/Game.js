@@ -26,11 +26,12 @@ const Game = ({height, width, tilesize}) => {
 
   useEffect(() => {
     gameLoop();
-    bindEvent('keydown', handleKeyDown);
-    bindEvent('keyup', handleKeyUp);
   }, [gameTimer]);
 
   const initGame = () => {
+    bindEvent('keyup', handleKeyUp);
+    bindEvent('keydown', handleKeyDown);
+
     let t = 0;
     _ticker = null;
 
@@ -47,7 +48,7 @@ const Game = ({height, width, tilesize}) => {
     const height = _config.height * tilesize;
     const width = _config.width * tilesize;
 
-    context.clearRect(0, 0, height, width);
+    context.clearRect(0, 0, width, height);
     
     context.fillStyle = player.color;
     context.fillRect(player.x, player.y, player.width, player.height);
@@ -122,8 +123,7 @@ const Game = ({height, width, tilesize}) => {
         style={{
           border: '1px solid black',
           background: 'DimGrey'
-        }}
-        />
+        }}/>
     </div>
   );
 }
