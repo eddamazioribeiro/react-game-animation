@@ -115,6 +115,14 @@ const Game = ({height, width, tilesize}) => {
     console.log('hit enter');
   }
 
+  const restart = () => {
+    clearInterval(_ticker);
+
+    setTimeout(() => {
+      initGame();
+    }, 1000);
+  }
+
   return(
     <div>
     <canvas ref={_gameScreen}
