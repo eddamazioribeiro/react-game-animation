@@ -1,10 +1,13 @@
 import React, {useRef, useEffect, useState} from 'react';
 import InputManager from './helpers/InputManager';
 import Player from './models/Player';
+import imgAux from './assets/bmp.png';
 
 var _ticker = null;
 var _inputManager = new InputManager();
 var _player = new Player();
+
+const img = new Image();
 
 const Game = ({height, width, tilesize}) => {
   const [gameTimer, setGameTimer] = useState(0);
@@ -17,6 +20,15 @@ const Game = ({height, width, tilesize}) => {
   };
 
   useEffect(() => {
+    img.onload = function() {
+      console.log('loaded');
+    }
+    img.onerror = (e) => {
+      console.error('error', e);
+    }
+    
+    img.src = imgAux;
+
     _inputManager.storeHandler('movePlayer', movePlayer);
     _inputManager.storeHandler('handleEnter', handleEnter);
 
@@ -45,9 +57,11 @@ const Game = ({height, width, tilesize}) => {
     const width = _config.width * tilesize;
 
     context.clearRect(0, 0, width, height);
-    
-    context.fillStyle = _player.color;
-    context.fillRect(_player.x, _player.y, _player.width, _player.height);
+
+    context.drawImage(img, _player.x, _player.y, 30, 30);
+
+    // context.fillStyle = _player.color;
+    // context.fillRect(_player.x, _player.y, _player.width, _player.height);
   };
 
   const movePlayer = (data) => {
