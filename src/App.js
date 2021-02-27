@@ -7,7 +7,7 @@ function App() {
       <Game
         height={20}
         width={18} 
-        tilesize={16}
+        tilesize={20}
         />
     </div>
   );

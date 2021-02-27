@@ -5,6 +5,7 @@ class Player {
     this._height = 16;
     this._x = 48;
     this._y = 48;
+    this._facing = 0;
   }
   get color() { return this._color };  
 
@@ -18,9 +19,17 @@ class Player {
   get y() { return this._y };  
   set y(val) { this._y = val };
 
+  get facing() { return this._facing };
+
   move(x, y) {
     this.x += x;
     this.y += y;
+
+    if (x < 0) this._facing = 2;
+    else if (x > 0) this._facing = 3;
+
+    if (y < 0) this._facing = 1;
+    else if (y > 0) this._facing = 0;
   };
 };
 

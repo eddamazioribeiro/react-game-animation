@@ -1,13 +1,15 @@
 import React, {useRef, useEffect, useState} from 'react';
 import InputManager from './helpers/InputManager';
 import Player from './models/Player';
-import megaman from './assets/megaman.png';
+import characterSrc from './assets/img/Green-Cap-Character-16x18.png';
 
 var _ticker = null;
 var _inputManager = new InputManager();
 var _player = new Player();
+var _frameCount = 0;
+var _frameIndex = 0;
 
-const img = new Image();
+const characterImg = new Image();
 
 const Game = ({height, width, tilesize}) => {
   const [gameTimer, setGameTimer] = useState(0);
@@ -16,18 +18,18 @@ const Game = ({height, width, tilesize}) => {
     height: height,
     width: width,
     tilesize: tilesize,
-    gameSpeed: 100
+    gameSpeed: 0.5
   };
 
   useEffect(() => {
-    img.onload = function() {
-      console.log('loaded');
+    characterImg.onload = function() {
+      console.log('image loaded');
     }
-    img.onerror = (e) => {
-      console.error('error', e);
+    characterImg.onerror = () => {
+      console.error('error while loading image');
     }
     
-    img.src = megaman;
+    characterImg.src = characterSrc;
 
     _inputManager.storeHandler('movePlayer', movePlayer);
     _inputManager.storeHandler('handleEnter', handleEnter);
@@ -36,7 +38,13 @@ const Game = ({height, width, tilesize}) => {
   }, []);
 
   useEffect(() => {
-    gameLoop();
+    _frameCount++;
+
+    if (_frameCount >= 15) {
+      gameLoop();
+
+      _frameCount = 0;
+    }
   }, [gameTimer]);
 
   const initGame = () => {
@@ -58,13 +66,34 @@ const Game = ({height, width, tilesize}) => {
 
     context.clearRect(0, 0, width, height);
 
-    context.drawImage(img, _player.x, _player.y, 30, 30);
+    drawGreenCap(context);
   };
+
+  const drawGreenCap = (context) => {
+    const drawFrame = (frameX, frameY, x, y) => {
+      const width = 16;
+      const height = 18;
+
+      context.drawImage(characterImg,
+        frameX * width, frameY * height, width, height,
+        _player.x + (width * x), _player.y + (height * y), _config.tilesize, _config.tilesize);
+    };
+
+    const walkFrames = [0, 1, 0, 2];
+
+    drawFrame(walkFrames[_frameIndex], _player.facing, 0, 0);
+
+    _frameIndex++;
+
+    if (_frameIndex >= walkFrames.length) _frameIndex = 0;
+
+    return context;
+  }
 
   const movePlayer = (data) => {
     let {x, y} = data;
 
-    let tilesize = _config.tilesize;
+    let tilesize = _config.tilesize / 4;
 
     _player.move(x * tilesize, y * tilesize);
   }
