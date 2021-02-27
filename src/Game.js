@@ -40,7 +40,7 @@ const Game = ({height, width, tilesize}) => {
   useEffect(() => {
     _frameCount++;
 
-    if (_frameCount >= 15) {
+    if (_frameCount >= 16) {
       gameLoop();
 
       _frameCount = 0;
@@ -66,20 +66,19 @@ const Game = ({height, width, tilesize}) => {
 
     context.clearRect(0, 0, width, height);
 
-    drawGreenCap(context);
+    drawCharacter(context);
   };
 
-  const drawGreenCap = (context) => {
+  const drawCharacter = (context) => {
     const drawFrame = (frameX, frameY, x, y) => {
-      const width = 16;
-      const height = 18;
-
       context.drawImage(characterImg,
-        frameX * width, frameY * height, width, height,
-        _player.x + (width * x), _player.y + (height * y), _config.tilesize, _config.tilesize);
+        frameX * _player.width, frameY * _player.height, _player.width, _player.height,
+        _player.x + (_player.width * x), _player.y + (_player.height * y), _config.tilesize, _config.tilesize);
     };
 
     const walkFrames = [0, 1, 0, 2];
+
+    if (!_player.isMoving) _frameIndex = 0;
 
     drawFrame(walkFrames[_frameIndex], _player.facing, 0, 0);
 
@@ -92,10 +91,16 @@ const Game = ({height, width, tilesize}) => {
 
   const movePlayer = (data) => {
     let {x, y} = data;
+    let stepLength = _config.tilesize / 4;
+    let xAux = (x * stepLength),
+      yAux = (y * stepLength);
+    let newX = _player.x + xAux,
+      newY = _player.y + yAux;
 
-    let tilesize = _config.tilesize / 4;
-
-    _player.move(x * tilesize, y * tilesize);
+    if ((newX > 0 && newX <= (_config.width * _config.tilesize) - _player.width)
+      && (newY > 0 && newY <= (_config.height * _config.tilesize) - _player.height)) {
+        _player.move((xAux), (yAux));
+      }
   }
 
   const handleEnter = (data) => {

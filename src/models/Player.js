@@ -2,10 +2,11 @@ class Player {
   constructor(width, height) {
     this._color = 'black';
     this._width = 16;
-    this._height = 16;
+    this._height = 18;
     this._x = 48;
     this._y = 48;
     this._facing = 0;
+    this._isMoving = false;
   }
   get color() { return this._color };  
 
@@ -21,7 +22,12 @@ class Player {
 
   get facing() { return this._facing };
 
+  get isMoving() { return this._isMoving };
+
   move(x, y) {
+    if (x != 0 || y != 0) this._isMoving = true;
+    else this._isMoving = false;
+
     this.x += x;
     this.y += y;
 
