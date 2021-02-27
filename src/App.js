@@ -5,9 +5,9 @@ function App() {
   return (
     <div className="App">
       <Game
-        height={10}
-        width={10} 
-        tilesize={20}
+        height={40}
+        width={36} 
+        tilesize={8}
         />
     </div>
   );

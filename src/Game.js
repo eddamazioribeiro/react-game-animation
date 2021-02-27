@@ -5,7 +5,7 @@ import characterSrc from './assets/img/Green-Cap-Character-16x18.png';
 
 var _ticker = null;
 var _inputManager = new InputManager();
-var _player = new Player();
+var _player = new Player(16, 18, 1.5);
 var _frameCount = 0;
 var _frameIndex = 0;
 
@@ -18,6 +18,8 @@ const Game = ({height, width, tilesize}) => {
     height: height,
     width: width,
     tilesize: tilesize,
+    finalHeight: height * tilesize,
+    finalWidth: width * tilesize,
     gameSpeed: 0.5
   };
 
@@ -60,20 +62,20 @@ const Game = ({height, width, tilesize}) => {
     _inputManager.handleInput();
 
     const context = _gameScreen.current.getContext('2d');
-    const tilesize = _config.tilesize;
-    const height = _config.height * tilesize;
-    const width = _config.width * tilesize;
 
-    context.clearRect(0, 0, width, height);
+    context.clearRect(0, 0, _config.finalWidth, _config.finalHeight);
 
     drawCharacter(context);
   };
 
   const drawCharacter = (context) => {
     const drawFrame = (frameX, frameY, x, y) => {
+      let scaledWidth = _player.width * _player.scale;
+      let scaledHeight = _player.height * _player.scale;
+
       context.drawImage(characterImg,
         frameX * _player.width, frameY * _player.height, _player.width, _player.height,
-        _player.x + (_player.width * x), _player.y + (_player.height * y), _config.tilesize, _config.tilesize);
+        _player.x + (_player.width * x), _player.y + (_player.height * y), scaledWidth, scaledHeight);
     };
 
     const walkFrames = [0, 1, 0, 2];
@@ -91,16 +93,18 @@ const Game = ({height, width, tilesize}) => {
 
   const movePlayer = (data) => {
     let {x, y} = data;
-    let stepLength = _config.tilesize / 4;
+    let stepLength = (x != 0 && y != 0) ? _config.tilesize / (_player.scale * 1.5) : _config.tilesize / _player.scale;
+    let scaledWidth = _player.width * _player.scale;
+    let scaledHeight = _player.height * _player.scale;
     let xAux = (x * stepLength),
       yAux = (y * stepLength);
     let newX = _player.x + xAux,
       newY = _player.y + yAux;
 
-    if ((newX > 0 && newX <= (_config.width * _config.tilesize) - _player.width)
-      && (newY > 0 && newY <= (_config.height * _config.tilesize) - _player.height)) {
-        _player.move((xAux), (yAux));
-      }
+    if ((newX > 0 && newX <= (_config.finalWidth) - scaledWidth)
+      && (newY > 0 && newY <= (_config.finalHeight) - scaledHeight)) {
+      _player.move((xAux), (yAux));
+    }
   }
 
   const handleEnter = (data) => {

@@ -1,10 +1,11 @@
 class Player {
-  constructor(width, height) {
+  constructor(width, height, scale) {
     this._color = 'black';
-    this._width = 16;
-    this._height = 18;
-    this._x = 48;
-    this._y = 48;
+    this._width = width;
+    this._height = height;
+    this._x = 1;
+    this._y = 1;
+    this._scale = scale;
     this._facing = 0;
     this._isMoving = false;
   }
@@ -12,7 +13,9 @@ class Player {
 
   get width() { return this._width };  
 
-  get height() { return this._height };  
+  get height() { return this._height };
+
+  get scale() { return this._scale };  
 
   get x() { return this._x };  
   set x(val) { this._x = val };
