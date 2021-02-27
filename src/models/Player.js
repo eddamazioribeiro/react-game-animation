@@ -7,6 +7,7 @@ class Player {
     this._y = 1;
     this._scale = scale;
     this._facing = 0;
+    this._frameIndex = 0;
     this._isMoving = false;
   }
   get color() { return this._color };  
@@ -22,6 +23,9 @@ class Player {
 
   get y() { return this._y };  
   set y(val) { this._y = val };
+
+  get frameIndex() { return this._frameIndex };  
+  set frameIndex(val) { this._frameIndex = val };
 
   get facing() { return this._facing };
 

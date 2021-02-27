@@ -5,7 +5,7 @@ import characterSrc from './assets/img/Green-Cap-Character-16x18.png';
 
 var _ticker = null;
 var _inputManager = new InputManager();
-var _player = new Player(16, 18, 1.5);
+var _player = new Player(16, 18, 2);
 var _frameCount = 0;
 var _frameIndex = 0;
 
@@ -20,7 +20,7 @@ const Game = ({height, width, tilesize}) => {
     tilesize: tilesize,
     finalHeight: height * tilesize,
     finalWidth: width * tilesize,
-    gameSpeed: 0.5
+    gameSpeed: 1
   };
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const Game = ({height, width, tilesize}) => {
   useEffect(() => {
     _frameCount++;
 
-    if (_frameCount >= 16) {
+    if (_frameCount >= 15) {
       gameLoop();
 
       _frameCount = 0;
@@ -50,13 +50,21 @@ const Game = ({height, width, tilesize}) => {
   }, [gameTimer]);
 
   const initGame = () => {
+    _player.x = 1;
+    _player.y = 1;
+
     let t = 0;
     _ticker = null;
+    
+    _ticker = createTimer(t);
+  }
 
-    _ticker = setInterval(() => {
-      setGameTimer(t++);
+  const createTimer = (t) => {
+    return setInterval(() => {
+      t++;
+      setGameTimer(t);
     }, _config.gameSpeed);
-  };
+  }
 
   const gameLoop = () => {
     _inputManager.handleInput();
@@ -80,13 +88,13 @@ const Game = ({height, width, tilesize}) => {
 
     const walkFrames = [0, 1, 0, 2];
 
-    if (!_player.isMoving) _frameIndex = 0;
+    if (!_player.isMoving) _player.frameIndex = 0;
 
-    drawFrame(walkFrames[_frameIndex], _player.facing, 0, 0);
+    drawFrame(walkFrames[_player.frameIndex], _player.facing, 0, 0);
 
-    _frameIndex++;
+    _player.frameIndex++;
 
-    if (_frameIndex >= walkFrames.length) _frameIndex = 0;
+    if (_player.frameIndex >= walkFrames.length) _player.frameIndex = 0;
 
     return context;
   }
@@ -108,7 +116,7 @@ const Game = ({height, width, tilesize}) => {
   }
 
   const handleEnter = (data) => {
-    console.log('hit enter');
+    restart();
   }
 
   const restart = () => {
@@ -121,13 +129,13 @@ const Game = ({height, width, tilesize}) => {
 
   return(
     <div>
-    <canvas ref={_gameScreen}
-        height={_config.height * _config.tilesize}
-        width={_config.width * _config.tilesize}
-        style={{
-          border: '1px solid black',
-          background: 'DimGrey'
-        }}/>
+      <canvas ref={_gameScreen}
+          height={_config.height * _config.tilesize}
+          width={_config.width * _config.tilesize}
+          style={{
+            border: '1px solid black',
+            background: 'DimGrey'
+          }}/>
     </div>
   );
 }
