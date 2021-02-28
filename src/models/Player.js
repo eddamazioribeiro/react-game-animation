@@ -1,3 +1,5 @@
+import {getImageByName} from '../helpers/AssetLoader';
+
 class Player {
   constructor(width, height, scale) {
     this._width = width;
@@ -8,6 +10,7 @@ class Player {
     this._facing = 0;
     this._frameIndex = 0;
     this._isMoving = false;
+    this._graphics = getImageByName('green_cap').image;
   }
 
   get width() { return this._width };  
@@ -28,6 +31,8 @@ class Player {
   get facing() { return this._facing };
 
   get isMoving() { return this._isMoving };
+
+  get graphics() { return this._graphics };
 
   move(x, y) {
     if (x != 0 || y != 0) this._isMoving = true;

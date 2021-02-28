@@ -1,7 +1,6 @@
 import React, {useRef, useEffect, useState} from 'react';
 import InputManager from './helpers/InputManager';
 import Player from './models/Player';
-import {images} from './helpers/AssetLoader';
 
 var _ticker = null;
 var _inputManager = new InputManager();
@@ -65,13 +64,11 @@ const Game = ({height, width, tilesize}) => {
   };
 
   const drawCharacter = (context) => {
-    const characterImg = images['green_cap'].image;
-
     const drawFrame = (frameX, frameY, x, y) => {
       let scaledWidth = _player.width * _player.scale;
       let scaledHeight = _player.height * _player.scale;
 
-      context.drawImage(characterImg,
+      context.drawImage(_player.graphics,
         frameX * _player.width, frameY * _player.height, _player.width, _player.height,
         _player.x + (_player.width * x), _player.y + (_player.height * y), scaledWidth, scaledHeight);
     };

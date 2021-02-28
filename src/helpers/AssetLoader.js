@@ -35,7 +35,11 @@ const loadImage = (image) => {
   return imageAux;
 };
 
+const getImageByName = (name) => {
+  return images[name];
+}
+
 getAllImages();
 loadAllImages();
 
-export {images};
+export {images, getImageByName};
