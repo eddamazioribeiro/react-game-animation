@@ -1,6 +1,5 @@
 class Player {
   constructor(width, height, scale) {
-    this._color = 'black';
     this._width = width;
     this._height = height;
     this._x = 1;
@@ -10,7 +9,6 @@ class Player {
     this._frameIndex = 0;
     this._isMoving = false;
   }
-  get color() { return this._color };  
 
   get width() { return this._width };  
 

@@ -1,15 +1,12 @@
 import React, {useRef, useEffect, useState} from 'react';
 import InputManager from './helpers/InputManager';
 import Player from './models/Player';
-import characterSrc from './assets/img/Green-Cap-Character-16x18.png';
+import {images} from './helpers/AssetLoader';
 
 var _ticker = null;
 var _inputManager = new InputManager();
 var _player = new Player(16, 18, 2);
 var _frameCount = 0;
-var _frameIndex = 0;
-
-const characterImg = new Image();
 
 const Game = ({height, width, tilesize}) => {
   const [gameTimer, setGameTimer] = useState(0);
@@ -24,15 +21,6 @@ const Game = ({height, width, tilesize}) => {
   };
 
   useEffect(() => {
-    characterImg.onload = function() {
-      console.log('image loaded');
-    }
-    characterImg.onerror = () => {
-      console.error('error while loading image');
-    }
-    
-    characterImg.src = characterSrc;
-
     _inputManager.storeHandler('movePlayer', movePlayer);
     _inputManager.storeHandler('handleEnter', handleEnter);
 
@@ -77,6 +65,8 @@ const Game = ({height, width, tilesize}) => {
   };
 
   const drawCharacter = (context) => {
+    const characterImg = images['green_cap'].image;
+
     const drawFrame = (frameX, frameY, x, y) => {
       let scaledWidth = _player.width * _player.scale;
       let scaledHeight = _player.height * _player.scale;
